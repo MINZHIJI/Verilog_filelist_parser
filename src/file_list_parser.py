@@ -24,10 +24,11 @@ class file_list_parser:
         self.env_var_dict = {}
 
     def main(self,f_handler):
+        # NOTE: return the list parsed
         self.parse_filelist(f_handler)
         for idx, item in enumerate(self.file_list):
             if(item[0] != "comments"):
-                self.logger.info(f"{item}")
+                self.logger.debug(f"{item}")
         return self.file_list
     def parse_filelist(self, f_handler):
         lines = f_handler.readlines()
@@ -120,6 +121,27 @@ class file_list_parser:
         str_path = os.path.expandvars(str)
         return str_path
     def get_env_var_dict(self):
+        self.logger.debug(self.env_var_dict)
         return self.env_var_dict
+    def get_files(self):
+        files = []
+        for item in self.file_list:
+            if(item[0] == "file"):
+                files.append(item[1])
+        return files
+    def get_incdirs(self):
+        idirs = []
+        for item in self.file_list:
+            if(item[0] == "incdir"):
+                idirs.append(item[1])
+        return idirs
+    def get_full_path(self,str):
+        # TODO: Check if the path is absolute path or relative path
+        # NOTE: Check if the path is absolute path
+        if(os.path.isabs(str)):
+            return str
+        # NOTE: Check if the path is relative path
+        elif(os.path.isfile(str)):
+            return os.path.abspath(str)
 if __name__ == "__main__":
     pass
